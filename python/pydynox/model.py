@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
 
 from pydynox._internal._model._async import (
     delete as async_delete,
@@ -122,6 +122,24 @@ class Model(ModelBase, metaclass=ModelMeta):
     """
 
     # ========== SYNC CRUD ==========
+
+    @overload
+    @classmethod
+    def sync_get(
+        cls: type[M],
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+        **keys: Any,
+    ) -> M | None: ...
+
+    @overload
+    @classmethod
+    def sync_get(
+        cls: type[M],
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+        **keys: Any,
+    ) -> dict[str, Any] | None: ...
 
     @classmethod
     def sync_get(
@@ -245,6 +263,24 @@ class Model(ModelBase, metaclass=ModelMeta):
         """
         sync_delete_by_key(cls, condition, **kwargs)
 
+    @overload
+    @classmethod
+    def sync_batch_get(
+        cls: type[M],
+        keys: list[dict[str, Any]],
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+    ) -> list[M]: ...
+
+    @overload
+    @classmethod
+    def sync_batch_get(
+        cls: type[M],
+        keys: list[dict[str, Any]],
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+    ) -> list[dict[str, Any]]: ...
+
     @classmethod
     def sync_batch_get(
         cls: type[M],
@@ -276,6 +312,24 @@ class Model(ModelBase, metaclass=ModelMeta):
         """
         return sync_batch_get(cls, keys, consistent_read, as_dict)
 
+    @overload
+    @classmethod
+    async def batch_get(
+        cls: type[M],
+        keys: list[dict[str, Any]],
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+    ) -> list[M]: ...
+
+    @overload
+    @classmethod
+    async def batch_get(
+        cls: type[M],
+        keys: list[dict[str, Any]],
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+    ) -> list[dict[str, Any]]: ...
+
     @classmethod
     async def batch_get(
         cls: type[M],
@@ -305,6 +359,24 @@ class Model(ModelBase, metaclass=ModelMeta):
         return await batch_get(cls, keys, consistent_read, as_dict)
 
     # ========== ASYNC CRUD (default) ==========
+
+    @overload
+    @classmethod
+    async def get(
+        cls: type[M],
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+        **keys: Any,
+    ) -> M | None: ...
+
+    @overload
+    @classmethod
+    async def get(
+        cls: type[M],
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+        **keys: Any,
+    ) -> dict[str, Any] | None: ...
 
     @classmethod
     async def get(
@@ -434,6 +506,40 @@ class Model(ModelBase, metaclass=ModelMeta):
 
     # ========== SYNC QUERY/SCAN ==========
 
+    @overload
+    @classmethod
+    def sync_query(
+        cls: type[M],
+        partition_key: Any = None,
+        sort_key_condition: Condition | None = None,
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        scan_index_forward: bool = True,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        as_dict: Literal[False] = False,
+        fields: list[str] | None = None,
+        **kwargs: Any,
+    ) -> ModelQueryResult[M]: ...
+
+    @overload
+    @classmethod
+    def sync_query(
+        cls: type[M],
+        partition_key: Any = None,
+        sort_key_condition: Condition | None = None,
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        scan_index_forward: bool = True,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        as_dict: Literal[True] = ...,
+        fields: list[str] | None = None,
+        **kwargs: Any,
+    ) -> ModelQueryResult[dict[str, Any]]: ...
+
     @classmethod
     def sync_query(
         cls: type[M],
@@ -448,7 +554,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         as_dict: bool = False,
         fields: list[str] | None = None,
         **kwargs: Any,
-    ) -> ModelQueryResult[M]:
+    ) -> ModelQueryResult[Any]:
         """Query items by hash key with optional conditions (sync).
 
         Args:
@@ -491,6 +597,36 @@ class Model(ModelBase, metaclass=ModelMeta):
             **kwargs,
         )
 
+    @overload
+    @classmethod
+    def sync_scan(
+        cls: type[M],
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        segment: int | None = None,
+        total_segments: int | None = None,
+        as_dict: Literal[False] = False,
+        fields: list[str] | None = None,
+    ) -> ModelScanResult[M]: ...
+
+    @overload
+    @classmethod
+    def sync_scan(
+        cls: type[M],
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        segment: int | None = None,
+        total_segments: int | None = None,
+        as_dict: Literal[True] = ...,
+        fields: list[str] | None = None,
+    ) -> ModelScanResult[dict[str, Any]]: ...
+
     @classmethod
     def sync_scan(
         cls: type[M],
@@ -503,7 +639,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         total_segments: int | None = None,
         as_dict: bool = False,
         fields: list[str] | None = None,
-    ) -> ModelScanResult[M]:
+    ) -> ModelScanResult[Any]:
         """Scan all items in the table (sync).
 
         Args:
@@ -583,6 +719,26 @@ class Model(ModelBase, metaclass=ModelMeta):
         """
         return sync_execute_statement(cls, statement, parameters, consistent_read)
 
+    @overload
+    @classmethod
+    def sync_parallel_scan(
+        cls: type[M],
+        total_segments: int,
+        filter_condition: Condition | None = None,
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+    ) -> tuple[list[M], OperationMetrics]: ...
+
+    @overload
+    @classmethod
+    def sync_parallel_scan(
+        cls: type[M],
+        total_segments: int,
+        filter_condition: Condition | None = None,
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+    ) -> tuple[list[dict[str, Any]], OperationMetrics]: ...
+
     @classmethod
     def sync_parallel_scan(
         cls: type[M],
@@ -610,6 +766,40 @@ class Model(ModelBase, metaclass=ModelMeta):
 
     # ========== ASYNC QUERY/SCAN (default) ==========
 
+    @overload
+    @classmethod
+    def query(
+        cls: type[M],
+        partition_key: Any = None,
+        sort_key_condition: Condition | None = None,
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        scan_index_forward: bool = True,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        as_dict: Literal[False] = False,
+        fields: list[str] | None = None,
+        **kwargs: Any,
+    ) -> AsyncModelQueryResult[M]: ...
+
+    @overload
+    @classmethod
+    def query(
+        cls: type[M],
+        partition_key: Any = None,
+        sort_key_condition: Condition | None = None,
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        scan_index_forward: bool = True,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        as_dict: Literal[True] = ...,
+        fields: list[str] | None = None,
+        **kwargs: Any,
+    ) -> AsyncModelQueryResult[dict[str, Any]]: ...
+
     @classmethod
     def query(
         cls: type[M],
@@ -624,7 +814,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         as_dict: bool = False,
         fields: list[str] | None = None,
         **kwargs: Any,
-    ) -> AsyncModelQueryResult[M]:
+    ) -> AsyncModelQueryResult[Any]:
         """Query items by hash key with optional conditions (async, default).
 
         Args:
@@ -667,6 +857,36 @@ class Model(ModelBase, metaclass=ModelMeta):
             **kwargs,
         )
 
+    @overload
+    @classmethod
+    def scan(
+        cls: type[M],
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        segment: int | None = None,
+        total_segments: int | None = None,
+        as_dict: Literal[False] = False,
+        fields: list[str] | None = None,
+    ) -> AsyncModelScanResult[M]: ...
+
+    @overload
+    @classmethod
+    def scan(
+        cls: type[M],
+        filter_condition: Condition | None = None,
+        limit: int | None = None,
+        page_size: int | None = None,
+        consistent_read: bool | None = None,
+        last_evaluated_key: dict[str, Any] | None = None,
+        segment: int | None = None,
+        total_segments: int | None = None,
+        as_dict: Literal[True] = ...,
+        fields: list[str] | None = None,
+    ) -> AsyncModelScanResult[dict[str, Any]]: ...
+
     @classmethod
     def scan(
         cls: type[M],
@@ -679,7 +899,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         total_segments: int | None = None,
         as_dict: bool = False,
         fields: list[str] | None = None,
-    ) -> AsyncModelScanResult[M]:
+    ) -> AsyncModelScanResult[Any]:
         """Scan all items in the table (async, default).
 
         Args:
@@ -758,6 +978,26 @@ class Model(ModelBase, metaclass=ModelMeta):
             ... )
         """
         return await async_execute_statement(cls, statement, parameters, consistent_read)
+
+    @overload
+    @classmethod
+    async def parallel_scan(
+        cls: type[M],
+        total_segments: int,
+        filter_condition: Condition | None = None,
+        consistent_read: bool | None = None,
+        as_dict: Literal[False] = False,
+    ) -> tuple[list[M], OperationMetrics]: ...
+
+    @overload
+    @classmethod
+    async def parallel_scan(
+        cls: type[M],
+        total_segments: int,
+        filter_condition: Condition | None = None,
+        consistent_read: bool | None = None,
+        as_dict: Literal[True] = ...,
+    ) -> tuple[list[dict[str, Any]], OperationMetrics]: ...
 
     @classmethod
     async def parallel_scan(

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 
 [[package]]
@@ -830,7 +830,7 @@ wheels = [
 
 [[package]]
 name = "pydynox"
-version = "1.0.0"
+version = "1.1.0"
 source = { editable = "." }
 
 [package.optional-dependencies]
