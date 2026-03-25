@@ -554,7 +554,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         as_dict: bool = False,
         fields: list[str] | None = None,
         **kwargs: Any,
-    ) -> ModelQueryResult[Any]:
+    ) -> ModelQueryResult[M | dict[str, Any]]:
         """Query items by hash key with optional conditions (sync).
 
         Args:
@@ -639,7 +639,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         total_segments: int | None = None,
         as_dict: bool = False,
         fields: list[str] | None = None,
-    ) -> ModelScanResult[Any]:
+    ) -> ModelScanResult[M | dict[str, Any]]:
         """Scan all items in the table (sync).
 
         Args:
@@ -814,7 +814,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         as_dict: bool = False,
         fields: list[str] | None = None,
         **kwargs: Any,
-    ) -> AsyncModelQueryResult[Any]:
+    ) -> AsyncModelQueryResult[M | dict[str, Any]]:
         """Query items by hash key with optional conditions (async, default).
 
         Args:
@@ -899,7 +899,7 @@ class Model(ModelBase, metaclass=ModelMeta):
         total_segments: int | None = None,
         as_dict: bool = False,
         fields: list[str] | None = None,
-    ) -> AsyncModelScanResult[Any]:
+    ) -> AsyncModelScanResult[M | dict[str, Any]]:
         """Scan all items in the table (async, default).
 
         Args:

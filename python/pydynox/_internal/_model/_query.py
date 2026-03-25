@@ -81,7 +81,7 @@ def sync_query(
     as_dict: bool = False,
     fields: list[str] | None = None,
     **kwargs: Any,
-) -> ModelQueryResult[M]:
+) -> ModelQueryResult[M | dict[str, Any]]:
     """Query items by hash key with optional conditions (sync).
 
     The partition_key can be provided directly or built from template placeholders.
@@ -121,7 +121,7 @@ def sync_scan(
     total_segments: int | None = None,
     as_dict: bool = False,
     fields: list[str] | None = None,
-) -> ModelScanResult[M]:
+) -> ModelScanResult[M | dict[str, Any]]:
     """Scan all items in the table (sync)."""
     return ModelScanResult(
         model_class=cls,
@@ -246,7 +246,7 @@ def query(
     as_dict: bool = False,
     fields: list[str] | None = None,
     **kwargs: Any,
-) -> AsyncModelQueryResult[M]:
+) -> AsyncModelQueryResult[M | dict[str, Any]]:
     """Query items by hash key with optional conditions (async, default).
 
     The partition_key can be provided directly or built from template placeholders.
@@ -288,7 +288,7 @@ def scan(
     total_segments: int | None = None,
     as_dict: bool = False,
     fields: list[str] | None = None,
-) -> AsyncModelScanResult[M]:
+) -> AsyncModelScanResult[M | dict[str, Any]]:
     """Scan all items in the table (async, default)."""
     return AsyncModelScanResult(
         model_class=cls,
