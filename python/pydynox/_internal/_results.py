@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from pydynox.hooks import HookType
 from pydynox.query import AsyncQueryResult, AsyncScanResult, QueryResult, ScanResult
@@ -175,7 +175,8 @@ class BaseModelResult(ABC, Generic[T]):
     def _to_result(self, item: dict[str, Any]) -> T:
         """Convert item based on as_dict flag."""
         if self._as_dict:
-            return item  # type: ignore[return-value]
+            # If as_dict is True, T will always be a dict, so casting is safe
+            return cast(T, item)
         return self._to_instance(item)
 
     @abstractmethod
